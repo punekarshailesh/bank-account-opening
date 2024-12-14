@@ -1,0 +1,80 @@
+CREATE TABLE branch (
+    branchid INT PRIMARY KEY,
+    branchname VARCHAR(100) NOT NULL,
+    branchaddress VARCHAR(255) NOT NULL,
+    branchcontact VARCHAR(15)
+);
+
+CREATE TABLE customer (
+    customerid INT PRIMARY KEY,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+    dob DATE NOT NULL,
+    address VARCHAR(255),
+    phone VARCHAR(15),
+    email VARCHAR(100),
+    aadharcard VARCHAR(50),
+    pancard VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE account (
+    accountid INT PRIMARY KEY, 
+    customerid INT, 
+    branchid INT, 
+    accounttype VARCHAR(20), 
+    accountnumber VARCHAR(20) UNIQUE NOT NULL, 
+    openingdate DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    balance DECIMAL(15, 2) DEFAULT 0.00, 
+    status VARCHAR(20), 
+    FOREIGN KEY (customerid) REFERENCES customer(customerid), 
+    FOREIGN KEY (branchid) REFERENCES branch(branchid)
+);
+
+CREATE TABLE savingaccount (
+    savingaccountid INT PRIMARY KEY,
+    accountid INT,
+    interestrate DECIMAL(5, 2),
+    minbalancerequirement DECIMAL(15, 2),
+    FOREIGN KEY (accountid) REFERENCES account(accountid)
+);
+
+CREATE TABLE currentaccount (
+    currentaccountid INT PRIMARY KEY,
+    accountid INT,
+    overdraftlimit DECIMAL(15, 2),
+    FOREIGN KEY (accountid) REFERENCES account(accountid)
+);
+
+CREATE TABLE verificationlog (
+    verificationid INT PRIMARY KEY,
+    customerid INT, 
+    verifiedby VARCHAR(100),
+    verificationdate DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    verificationstatus VARCHAR(20), 
+    remarks TEXT, 
+    FOREIGN KEY (customerid) REFERENCES customer(customerid)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE branch (branchid INT PRIMARY KEY, branchname VARCHAR(100) NOT NULL, branchaddress VARCHAR(255) NOT NULL, branchcontact VARCHAR(15)); 
+
+CREATE TABLE customer (customerid INT PRIMARY KEY, firstname VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, dob DATE NOT NULL, address VARCHAR(255), phone VARCHAR(15), email VARCHAR(100), aadharcard VARCHAR(50), pancard VARCHAR(50) UNIQUE NOT NULL); 
+
+CREATE TABLE account (accountid INT PRIMARY KEY, customerid INT, branchid INT, accounttype VARCHAR(20), accountnumber VARCHAR(20) UNIQUE NOT NULL, openingdate DATETIME DEFAULT CURRENT_TIMESTAMP, balance DECIMAL(15, 2) DEFAULT 0.00, status VARCHAR(20), FOREIGN KEY (customerid) REFERENCES customer(customerid), FOREIGN KEY (branchid) REFERENCES branch(branchid)); 
+
+CREATE TABLE savingaccount (savingaccountid INT PRIMARY KEY, accountid INT, interestrate DECIMAL(5, 2), minbalancerequirement DECIMAL(15, 2), FOREIGN KEY (accountid) REFERENCES account(accountid)); 
+
+CREATE TABLE currentaccount (currentaccountid INT PRIMARY KEY, accountid INT, overdraftlimit DECIMAL(15, 2), FOREIGN KEY (accountid) REFERENCES account(accountid)); 
+
+CREATE TABLE verificationlog (verificationid INT PRIMARY KEY, customerid INT, verifiedby VARCHAR(100), verificationdate DATETIME DEFAULT CURRENT_TIMESTAMP, verificationstatus VARCHAR(20), remarks TEXT, FOREIGN KEY (customerid) REFERENCES customer(customerid));
+

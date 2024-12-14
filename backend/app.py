@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify
 import mysql.connector
 import os
 from flask_cors import CORS
+from datetime import datetime
+import random
+import re
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from all origins
@@ -20,9 +23,21 @@ def get_db_connection():
     connection = mysql.connector.connect(**db_config)
     return connection
 
+# validation
+def validate_email(email):
+    pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+    return re.match(pattern, email) is not None
+
+def validate_aadhar(aadhar):
+    return len(str(aadhar)) == 12 and str(aadhar).isdigit()
+
+def validate_pan(pan):
+    pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$'
+    return re.match(pattern, pan) is not None
+
+
 # Route to open an account
 @app.route('/open_account', methods=['POST'])
-@app.route('/open_account/', methods=['POST'])  # Support with and without trailing slash
 def open_account():
     print(request.method)  # Debug info
     print(request.form)  # Debug info
@@ -35,22 +50,43 @@ def open_account():
         return jsonify({"error": "Invalid document format. Only PDF and JPG are allowed."}), 400
     
     try:
+        # generating customerid
+        current_date = datetime.now().strftime('%m%d%H%M%S')
+        customerid = f"{current_date}"
+
         doc_path = os.path.join('uploads', file.filename)
         os.makedirs('uploads', exist_ok=True)
         file.save(doc_path)
         
+        email = data['email']
+        aadharcard = data['aadharcard']
+        pancard = data['pancard']
+
+        # Validate data
+        if not validate_email(email):
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        if not validate_aadhar(aadharcard):
+            return jsonify({'error': 'Invalid Aadhar number'}), 400
+        
+        if not validate_pan(pancard):
+            return jsonify({'error': 'Invalid PAN format'}), 400
+
+
         query = """
-        INSERT INTO Customer (FirstName, LastName, Email, Phone, Address, AadharCard, PanCard) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO customer (customerid, firstname, lastname, dob, address, phone, email, aadharcard, pancard) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         values = (
-            data['first_name'], 
-            data['last_name'], 
-            data['email'], 
-            data['phone'], 
+            customerid,
+            data['firstname'], 
+            data['lastname'], 
+            data['dob'], 
             data['address'], 
-            data['AadharCard'], 
-            data['PanCard']
+            data['phone'], 
+            email, 
+            aadharcard,
+            pancard
         )
         
         connection = get_db_connection()
@@ -59,7 +95,8 @@ def open_account():
         connection.commit()
         connection.close()
         
-        return jsonify({"message": "Account created successfully!"}), 201
+        return jsonify({"message": "Account created successfully!",
+        "customer_id": customerid}), 201
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {err}"}), 500
 
