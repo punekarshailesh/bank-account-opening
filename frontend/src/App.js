@@ -167,7 +167,7 @@ function App() {
               required
             />
           </div>
-          <div className="form-group"></div>
+          <div className="form-group">
             <label htmlFor="lastname">Last Name</label>
             <input
               type="text"
@@ -251,7 +251,7 @@ function App() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="document">Upload Document</label>
+            <label htmlFor="document">Upload Document(Pan/Aadhar)</label>
             <input
               type="file"
               id="document"
@@ -261,9 +261,6 @@ function App() {
               required
             />
           </div>
-
-
-
 
           {/* Account Type Selection */}
           <div className="dropdown-group">
@@ -314,6 +311,7 @@ function App() {
                     </option>
                 ))}
             </select>
+          </div>
         </div>
 
             <button type="submit">Open Account</button>
