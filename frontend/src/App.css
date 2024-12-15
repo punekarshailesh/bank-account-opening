@@ -227,7 +227,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 /* Account Type Styling */
 .dropdown-group {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding: 15px;
   background: #f8f9fa;
   border-radius: 8px;
@@ -251,7 +251,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
   padding: 8px 16px;
   background: white;
   border: 2px solid #e0e0e0;
@@ -290,11 +290,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 .form-group select:hover {
   border-color: #3498db;
-}
-
-.form-group select option {
-  padding: 12px;
-  font-size: 15px;
 }
 
 /* Style for the branch container */

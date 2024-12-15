@@ -340,17 +340,35 @@ function App() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="document">Upload Document(Pan/Aadhar)</label>
-            <input
-              type="file"
-              id="document"
-              name="document"
-              accept=".pdf,.jpg"
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <label htmlFor="document">Upload Documents</label>
+            <div className="document-upload-container">
+                <div className="document-upload-item">
+                    <label>Pan Card</label>
+                    <input
+                        type="file"
+                        id="document1"
+                        name="document"
+                        accept=".pdf,.jpg"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                
+                <div className="document-upload-item">
+                    <label>Aadhar Card</label>
+                    <input
+                        type="file"
+                        id="document2"
+                        name="document"
+                        accept=".pdf,.jpg"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+            </div>
+        </div>
 
+          
           {/* Account Type Selection */}
           <div className="dropdown-group">
               <label htmlFor="accounttype" className="required">Account Type</label>
