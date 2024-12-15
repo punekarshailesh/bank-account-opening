@@ -71,13 +71,37 @@ def open_account():
         
         if not validate_pan(pancard):
             return jsonify({'error': 'Invalid PAN format'}), 400
+        
+        
+        # for acount table
+        account_type = request.form.get('accounttype')
+        balance = float(request.form.get('balance', 0))
+
+        # Validate balance based on account type
+        if account_type == 'savings' and balance < 1000:
+            return jsonify({
+                "error": "Minimum initial deposit of ₹1000 is required for savings account"
+            }), 400
+        
+        if balance < 0:
+            return jsonify({
+                "error": "Please enter a valid amount"
+            }), 400
+
+        accountid = int(str(customerid)[::-1])
+        branchid = data['branchid']
+        accounttype = data['accounttype']
+        accountnumber = datetime.now().strftime('%y%m%H%M%S')
+        openingdate = datetime.now()
+        balance = float(data['balance'])
+        status = 'active'
 
 
-        query = """
-        INSERT INTO customer (customerid, firstname, lastname, dob, address, phone, email, aadharcard, pancard) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        values = (
+        query1 = """
+            INSERT INTO customer (customerid, firstname, lastname, dob, address, phone, email, aadharcard, pancard) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+        values1 = (
             customerid,
             data['firstname'], 
             data['lastname'], 
@@ -88,10 +112,26 @@ def open_account():
             aadharcard,
             pancard
         )
+        query2 = """
+            INSERT INTO account (accountid, customerid, branchid, accounttype, 
+                        accountnumber, openingdate, balance, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+        values2 = (
+            accountid,
+            customerid,
+            branchid,
+            accounttype,
+            accountnumber,
+            openingdate,
+            balance,
+            status
+        )
         
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute(query, values)
+        cursor.execute(query1, values1)
+        cursor.execute(query2, values2)
         connection.commit()
         connection.close()
         

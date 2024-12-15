@@ -333,3 +333,81 @@ select.error {
 select.success {
   border-color: #2ecc71;
 }
+
+/* Add to your existing CSS */
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.form-group input[type="number"]:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-group input[type="number"].error {
+  border-color: #e74c3c;
+}
+
+/* Remove spinner buttons from number input */
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Add currency symbol before input */
+.form-group label[for="balance"]::after {
+  content: " (₹)";
+  color: #666;
+}
+
+.select-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #2c3e50;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+  transition: all 0.3s ease;
+}
+
+.select-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.select-input:hover {
+  border-color: #3498db;
+}
+
+.select-input option {
+  padding: 12px;
+  font-size: 15px;
+}
+
+/* Style for the first (placeholder) option */
+.select-input option:first-child {
+  color: #7f8c8d;
+}
+
+/* Hover effect for options */
+.select-input option:hover {
+  background-color: #f0f7ff;
+}

@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import './App.css';
 
+const BRANCH_MAPPING = {
+  '101': 'Downtown Branch',
+  '102': 'Midtown Branch',
+  '103': 'Uptown Branch',
+  '104': 'West End Branch',
+  '105': 'Eastside Branch',
+  '106': 'North Park Branch',
+  '107': 'Southgate Branch',
+  '108': 'Riverfront Branch',
+  '109': 'Lakeside Branch',
+  '110': 'Hilltop Branch'
+};
+
+
 function App() {
   const [formData, setFormData] = useState({
     firstname: '',
@@ -13,6 +27,7 @@ function App() {
     pancard: '',
     accounttype: '',
     branchid: '',
+    balance: '',
     document: null
   });
   const [message, setMessage] = useState('');
@@ -69,7 +84,25 @@ function App() {
           error = 'You must be at least 18 years old to open an account';
       }
     }
-
+    else if (name === 'balance' && value) {
+      const amount = parseFloat(value);
+      if (formData.accounttype === 'savings' && amount < 1000) {
+          error = 'Minimum initial deposit of ₹1000 is required for savings account';
+      } else if (amount < 0) {
+          error = 'Please enter a valid amount';
+      }
+    }
+    else if (name === 'accounttype') {
+        // Reset balance and error when switching account types
+        setFormData(prevState => ({
+            ...prevState,
+            balance: ''
+        }));
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            balance: ''
+        }));
+    }
     setFormData(prevState => ({
         ...prevState,
         [name]: value,
@@ -88,6 +121,10 @@ function App() {
     pancard: '',
     dob: ''
   });
+
+
+
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -100,6 +137,26 @@ function App() {
       }));
       setMessage('Please fix the validation errors before submitting.');
       return;
+    }
+
+    // Validate balance based on account type
+    const balance = parseFloat(formData.balance);
+    if (formData.accounttype === 'savings' && balance < 1000) {
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            balance: 'Minimum initial deposit of ₹1000 is required for savings account'
+        }));
+        setMessage('Please fix the validation errors before submitting.');
+        return;
+    }
+
+    if (balance < 0) {
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            balance: 'Please enter a valid amount'
+        }));
+        setMessage('Please fix the validation errors before submitting.');
+        return;
     }
 
     // Validate all fields before submission
@@ -151,6 +208,7 @@ function App() {
               setMessage(data.message || 'Account created successfully!');
           }
           const accountTypeFormatted = formData.accounttype.charAt(0).toUpperCase() + formData.accounttype.slice(1);
+          const branchName = BRANCH_MAPPING[formData.branchid];
           setMessage(`Your ${accountTypeFormatted} Account has been created successfully! Your Customer ID is: ${data.customer_id}`);
           // Clear form
           setFormData({
@@ -162,6 +220,9 @@ function App() {
               email: '',
               aadharcard: '',
               pancard: '',
+              accounttype: '',
+              branchid: '',
+              balance: '',
               document: null
             });
       } else {
@@ -319,7 +380,28 @@ function App() {
                   </div>
               </div>
           </div>
-
+          {/* Balance field with different requirements based on account type */}
+          <div className="form-group">
+              <label htmlFor="balance" className="required">
+                  {formData.accounttype === 'savings' 
+                      ? 'Initial Deposit (Min ₹1000)' 
+                      : 'Initial Deposit Amount'}
+              </label>
+              <input
+                  type="number"
+                  id="balance"
+                  name="balance"
+                  value={formData.balance}
+                  onChange={handleChange}
+                  min={formData.accounttype === 'savings' ? "1000" : "0"}
+                  required
+                  className={errors.balance ? 'error' : ''}
+                  placeholder={formData.accounttype === 'savings' 
+                      ? 'Minimum ₹1000 required' 
+                      : 'Enter deposit amount'}
+              />
+              {errors.balance && <span className="error-message">{errors.balance}</span>}
+          </div>
           {/* Branch Selection */}
           <div className="branch-container">
             <label htmlFor="branchid" className="required">Branch</label>
@@ -332,10 +414,10 @@ function App() {
                 className="select-input"
             >
                 <option value="">Select Branch</option>
-                {[...Array(10)].map((_, index) => (
-                    <option key={index + 101} value={`${index + 101}`}>
-                        Branch {index + 101}
-                    </option>
+                {Object.entries(BRANCH_MAPPING).map(([id, name]) => (
+                  <option key={id} value={id}>
+                      {name}
+                  </option>
                 ))}
             </select>
           </div>
