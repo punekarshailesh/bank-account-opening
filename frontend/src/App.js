@@ -240,8 +240,8 @@ function App() {
 
   return (
     <div className='container'>
-      <h1>Welcome to Anonymous Bank!</h1>
-      <h2>Proceed with your account opening process</h2>
+      <h1>Welcome to NASA Bank!</h1>
+      <h2>Please proceed with your account opening process</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-grid">
           <div className="form-group">

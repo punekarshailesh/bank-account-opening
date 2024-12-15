@@ -15,13 +15,14 @@ db_config = {
     'host': 'localhost',
     'user': 'root',
     'password': 'mysqlboot',  # Replace with your MySQL password
-    'database': 'banking'  # Replace with your database name
+    'database': 'bank'  # Replace with your database name
 }
 
 # Establish MySQL connection
 def get_db_connection():
     connection = mysql.connector.connect(**db_config)
     return connection
+
 
 # validation
 def validate_email(email):
