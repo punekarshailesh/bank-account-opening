@@ -202,14 +202,15 @@ function App() {
       const data = await response.json();
       if (response.ok) {
           // Check if both message and customer_id exist
-          if (data.message && data.customer_id) {
-            setMessage(`${data.message} Your Customer ID is: ${data.customer_id}`);
+          if (data.message && data.customer_id && data.accountnumber) {
+            setMessage(`${data.message} Your Customer ID is: ${data.customer_id} and your Account Number is: ${data.accountnumber}`);
           } else {
               setMessage(data.message || 'Account created successfully!');
           }
           const accountTypeFormatted = formData.accounttype.charAt(0).toUpperCase() + formData.accounttype.slice(1);
           const branchName = BRANCH_MAPPING[formData.branchid];
-          setMessage(`Your ${accountTypeFormatted} Account has been created successfully! Your Customer ID is: ${data.customer_id}`);
+          setMessage(`Your ${accountTypeFormatted} Account has been created successfully! Your Customer ID is: ${data.customer_id}
+            your Account Number is: ${data.accountnumber}`);
           // Clear form
           setFormData({
               firstname: '',

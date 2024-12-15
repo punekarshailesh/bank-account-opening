@@ -51,7 +51,7 @@ def open_account():
     
     try:
         # generating customerid
-        current_date = datetime.now().strftime('%m%d%H%M%S')
+        current_date = datetime.now().strftime('%d%H%M%S')
         customerid = f"{current_date}"
 
         doc_path = os.path.join('uploads', file.filename)
@@ -136,7 +136,8 @@ def open_account():
         connection.close()
         
         return jsonify({"message": "Account created successfully!",
-        "customer_id": customerid}), 201
+        "customer_id": customerid,
+        "accountnumber":accountnumber}), 201
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {err}"}), 500
 
