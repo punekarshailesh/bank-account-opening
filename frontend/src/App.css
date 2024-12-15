@@ -91,7 +91,7 @@ input[type="file"] {
 
 /* Submit button styling */
 button[type="submit"] {
-  width: 100%;
+  width: 50%;
   padding: 14px;
   background-color: #3498db;
   color: white;
@@ -104,8 +104,14 @@ button[type="submit"] {
   margin-top: 20px;
 }
 
+.button-container {
+    display: grid;
+    place-items: center;
+    margin-top: 20px;
+}
+
 button[type="submit"]:hover {
-  background-color: #2980b9;
+  background-color: #044e80;
 }
 
 button[type="submit"]:active {
@@ -185,27 +191,39 @@ input[type="date"] {
 
 .message.error {
   background-color: #f8d7da;
-  color: #721c24;
+  color: #ee2711;
   border: 1px solid #f5c6cb;
 }
 
 /* Loading state for button */
 button[type="submit"].loading {
-  background-color: #bdc3c7;
+  background-color: #ee2711;
   cursor: not-allowed;
+  /* size: 5cm; */
 }
 
 /* Required field indicator */
 .required::after {
   content: '*';
-  color: #e74c3c;
+  color: #ee2711;
   margin-left: 4px;
 }
 
+/* Add to your existing CSS */
+input[type="date"].error {
+  border-color: #ee2711;
+}
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+}
 
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: #f0f0f0;
+}
 
-/* Add these styles to your App.css */
 
 /* Account Type Styling */
 .dropdown-group {

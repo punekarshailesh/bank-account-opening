@@ -32,6 +32,18 @@ function App() {
     return panRegex.test(pan);
   };
 
+  const validateAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age >= 18;
+  };
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -52,6 +64,11 @@ function App() {
             error = 'PAN must be in format: ABCDE1234F';
         }
     }
+    else if (name === 'dob' && value) {
+      if (!validateAge(value)) {
+          error = 'You must be at least 18 years old to open an account';
+      }
+    }
 
     setFormData(prevState => ({
         ...prevState,
@@ -68,14 +85,23 @@ function App() {
   const [errors, setErrors] = useState({
     email: '',
     aadharcard: '',
-    pancard: ''
+    pancard: '',
+    dob: ''
   });
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formDataToSend = new FormData();
 
+    if (!validateAge(formData.dob)) {
+      setErrors(prevErrors => ({
+          ...prevErrors,
+          dob: 'You must be at least 18 years old to open an account'
+      }));
+      setMessage('Please fix the validation errors before submitting.');
+      return;
+    }
 
-    // const formDataToSend = new FormData();
     // Validate all fields before submission
     const validationErrors = {
       email: !validateEmail(formData.email) ? 'Invalid email address' : '',
@@ -91,8 +117,7 @@ function App() {
         return;
     }
 
-    const formDataToSend = new FormData();
-    
+        
     // Convert aadhar to string and ensure PAN is uppercase
     const dataToSend = {
         ...formData,
@@ -194,8 +219,10 @@ function App() {
               id="dob"
               name="dob"
               onChange={handleChange}
+              className={errors.dob ? 'error' : ''}
               required
             />
+            {errors.dob && <span className="error-message">{errors.dob}</span>}
           </div>
 
           <div className="form-group">
@@ -313,9 +340,10 @@ function App() {
             </select>
           </div>
         </div>
-
-            <button type="submit">Open Account</button>
-        </form>
+        <div className="button-container">
+          <button type="submit">Open Account</button>
+        </div>
+      </form>
 
       {message && (
         <div className={`message ${message.includes('successfully') ? 'success' : 'error'}`}>
