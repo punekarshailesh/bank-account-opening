@@ -1,11 +1,9 @@
-/* Add this CSS to your stylesheet */
-
 /* General page styling */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #a8ece3;
+  background: linear-gradient(135deg, #0646b4 0%, #010a1a 50%, #8e10e1 100%);
   color: #333;
 }
 
@@ -14,27 +12,28 @@ body {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
+  
 }
 
 /* Form header */
-h1 {
+.container h1 {
   text-align: center;
-  color: #2c3e50;
+  color: #cadaeb;
   margin-bottom: 30px;
   font-size: 2.5em;
   font-weight: 600;
 }
 
-h2 {
+.container h2 {
   text-align: center;
-  color: #2c3e50;
+  color: #ccd8e4;
   margin-bottom: 30px;
   font-weight: 600;
 }
 
 /* Form styling */
-form {
-  background: rgb(131, 223, 160);
+.container form {
+  background: radial-gradient(#4271e0 0%, #d0e6f7 50%, #eb50f0 100%);
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
