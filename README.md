@@ -131,7 +131,7 @@ The frontend is a React-based web application that provides the user interface. 
 # Screenshot of Banking Application
 
 ## Screenshot of Login Page 
-![Dashboard](https://github.com/user-attachments/assets/c47d56e6-dc23-4cb9-9c38-b1fecdceae53)
+<img src='/images/Dashboard.jpeg' alt='error'>
 
 ## Screenshot of Sign Up Form Page 
 ![SignUpForm](https://github.com/user-attachments/assets/166cd1b4-7b96-4add-9257-3912891d0f38)
