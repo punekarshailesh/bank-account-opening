@@ -5,6 +5,9 @@ from flask_cors import CORS
 from datetime import datetime
 import random
 import re
+from validators import validate_email, validate_aadhar, validate_pan, validate_balance
+from queries import insert_customer, insert_account 
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from all origins
@@ -24,19 +27,6 @@ def get_db_connection():
     return connection
 
 
-# validation
-def validate_email(email):
-    pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-    return re.match(pattern, email) is not None
-
-def validate_aadhar(aadhar):
-    return len(str(aadhar)) == 12 and str(aadhar).isdigit()
-
-def validate_pan(pan):
-    pattern = r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$'
-    return re.match(pattern, pan) is not None
-
-
 # Route to open an account
 @app.route('/open_account', methods=['POST'])
 def open_account():
@@ -45,19 +35,26 @@ def open_account():
     print(request.files)  # Debug info
 
     data = request.form
-    file = request.files.get('document')
+    pancard_file = request.files.get('pancard_doc')
+    aadhar_file = request.files.get('aadhar_doc')
     
-    if not file or file.filename.split('.')[-1].lower() not in ['pdf', 'jpg']:
-        return jsonify({"error": "Invalid document format. Only PDF and JPG are allowed."}), 400
+    for file in [pancard_file, aadhar_file]:
+        if not file or file.filename.split('.')[-1].lower() not in ['pdf', 'jpg']:
+            return jsonify({"error": "Invalid document format. Only PDF and JPG are allowed."}), 400
     
     try:
         # generating customerid
         current_date = datetime.now().strftime('%d%H%M%S')
         customerid = f"{current_date}"
 
-        doc_path = os.path.join('uploads', file.filename)
-        os.makedirs('uploads', exist_ok=True)
-        file.save(doc_path)
+        pancard_filename = f"pan_{customerid}_{pancard_file.filename}"
+        aadhar_filename = f"aadhar_{customerid}_{aadhar_file.filename}"
+
+        pancard_path = os.path.join('uploads', pancard_filename)
+        aadhar_path = os.path.join('uploads', aadhar_filename)
+
+        pancard_file.save(pancard_path)
+        aadhar_file.save(aadhar_path)
         
         email = data['email']
         aadharcard = data['aadharcard']
@@ -79,15 +76,9 @@ def open_account():
         balance = float(request.form.get('balance', 0))
 
         # Validate balance based on account type
-        if account_type == 'savings' and balance < 1000:
-            return jsonify({
-                "error": "Minimum initial deposit of ₹1000 is required for savings account"
-            }), 400
-        
-        if balance < 0:
-            return jsonify({
-                "error": "Please enter a valid amount"
-            }), 400
+        is_valid_balance, balance_error = validate_balance(account_type, balance)
+        if not is_valid_balance:
+            return jsonify({"error": balance_error}), 400
 
         accountid = int(str(customerid)[::-1])
         branchid = data['branchid']
@@ -97,12 +88,7 @@ def open_account():
         balance = float(data['balance'])
         status = 'active'
 
-
-        query1 = """
-            INSERT INTO customer (customerid, firstname, lastname, dob, address, phone, email, aadharcard, pancard) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-        values1 = (
+        customer_values = (
             customerid,
             data['firstname'], 
             data['lastname'], 
@@ -113,12 +99,7 @@ def open_account():
             aadharcard,
             pancard
         )
-        query2 = """
-            INSERT INTO account (accountid, customerid, branchid, accounttype, 
-                        accountnumber, openingdate, balance, status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """
-        values2 = (
+        account_values = (
             accountid,
             customerid,
             branchid,
@@ -131,14 +112,15 @@ def open_account():
         
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute(query1, values1)
-        cursor.execute(query2, values2)
+        cursor.execute(insert_customer, customer_values)
+        cursor.execute(insert_account, account_values)
         connection.commit()
         connection.close()
         
-        return jsonify({"message": "Account created successfully!",
-        "customer_id": customerid,
-        "accountnumber":accountnumber}), 201
+        return jsonify({
+            "message": "Account created successfully!",
+            "customer_id": customerid,
+            "accountnumber":accountnumber}), 201
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {err}"}), 500
 

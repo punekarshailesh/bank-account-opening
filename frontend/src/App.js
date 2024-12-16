@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import Body from './Body';
 
 const BRANCH_MAPPING = {
   '101': 'Downtown Branch',
@@ -28,7 +29,8 @@ function App() {
     accounttype: '',
     branchid: '',
     balance: '',
-    document: null
+    pancard_doc: null,
+    aadhar_doc: null
   });
   const [message, setMessage] = useState('');
 
@@ -103,10 +105,18 @@ function App() {
             balance: ''
         }));
     }
+
+    // Special handling for files
+    if (files) {
+      setFormData(prevState => ({
+          ...prevState,
+          [name]: files[0]
+      }));
+      return;
+    }
     setFormData(prevState => ({
         ...prevState,
-        [name]: value,
-        [name]: files ? files[0] : value
+        [name]: value
     }));
 
     // Update error state
@@ -121,8 +131,6 @@ function App() {
     pancard: '',
     dob: ''
   });
-
-
 
 
   // Handle form submission
@@ -191,8 +199,14 @@ function App() {
 
     // Append all form data fields
     Object.keys(formData).forEach(key => {
-      formDataToSend.append(key, formData[key]);
-    });
+      if (key === 'pancard_doc' || key === 'aadhar_doc') {
+          if (formData[key]) {
+              formDataToSend.append(key, formData[key]);
+          }
+      } else {
+          formDataToSend.append(key, formData[key]);
+      }
+  });
 
     try {
       const response = await fetch('http://127.0.0.1:5000/open_account', {
@@ -239,219 +253,14 @@ function App() {
 
 
   return (
-    <div className='container'>
-      <h1>Welcome to NASA Bank!</h1>
-      <h2>Please proceed with your account opening process</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="firstname">First Name</label>
-            <input
-              type="text"
-              id="firstname"
-              name="firstname"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastname">Last Name</label>
-            <input
-              type="text"
-              id="lastname"
-              name="lastname"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="dob">DOB</label>
-            <input
-              type="date"
-              id="dob"
-              name="dob"
-              onChange={handleChange}
-              className={errors.dob ? 'error' : ''}
-              required
-            />
-            {errors.dob && <span className="error-message">{errors.dob}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              onChange={handleChange}
-              className={errors.email ? 'error' : ''}
-              required
-            />
-            {errors.email && <span className="error-message">{errors.email}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="address">Address</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              onChange={handleChange}
-              required
-            />
-            
-          </div>
-          <div className="form-group">
-            <label htmlFor="aadharcard">Aadhar Card Number</label>
-            <input
-              type="number"
-              id="aadharcard"
-              name="aadharcard"
-              onChange={handleChange}
-              className={errors.aadharcard ? 'error' : ''}
-              maxLength="12"
-              required
-            />
-            {errors.aadharcard && <span className="error-message">{errors.aadharcard}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="pancard">Pan Card Number</label>
-            <input
-              type="text"
-              id="pancard"
-              name="pancard"
-              onChange={handleChange}
-              className={errors.pancard ? 'error' : ''}
-              maxLength="10"
-              required
-            />
-            {errors.pancard && <span className="error-message">{errors.pancard}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="document">Upload Documents</label>
-            <div className="document-upload-container">
-                <div className="document-upload-item">
-                    <label>Pan Card</label>
-                    <input
-                        type="file"
-                        id="document1"
-                        name="document"
-                        accept=".pdf,.jpg"
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                
-                <div className="document-upload-item">
-                    <label>Aadhar Card</label>
-                    <input
-                        type="file"
-                        id="document2"
-                        name="document"
-                        accept=".pdf,.jpg"
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-            </div>
-        </div>
-
-          
-          {/* Account Type Selection */}
-          <div className="dropdown-group">
-              <label htmlFor="accounttype" className="required">Account Type</label>
-              <div className="radio-group">
-                  <div className={`radio-item ${formData.accounttype === 'savings' ? 'active' : ''}`}>
-                      <input
-                          type="radio"
-                          id="savings"
-                          name="accounttype"
-                          value="savings"
-                          checked={formData.accounttype === 'savings'}
-                          onChange={handleChange}
-                          required
-                      />
-                      <label htmlFor="savings">Savings</label>
-                  </div>
-                  <div className={`radio-item ${formData.accounttype === 'current' ? 'active' : ''}`}>
-                      <input
-                          type="radio"
-                          id="current"
-                          name="accounttype"
-                          value="current"
-                          checked={formData.accounttype === 'current'}
-                          onChange={handleChange}
-                          required
-                      />
-                      <label htmlFor="current">Current</label>
-                  </div>
-              </div>
-          </div>
-          {/* Balance field with different requirements based on account type */}
-          <div className="form-group">
-              <label htmlFor="balance" className="required">
-                  {formData.accounttype === 'savings' 
-                      ? 'Initial Deposit (Min ₹1000)' 
-                      : 'Initial Deposit Amount'}
-              </label>
-              <input
-                  type="number"
-                  id="balance"
-                  name="balance"
-                  value={formData.balance}
-                  onChange={handleChange}
-                  min={formData.accounttype === 'savings' ? "1000" : "0"}
-                  required
-                  className={errors.balance ? 'error' : ''}
-                  placeholder={formData.accounttype === 'savings' 
-                      ? 'Minimum ₹1000 required' 
-                      : 'Enter deposit amount'}
-              />
-              {errors.balance && <span className="error-message">{errors.balance}</span>}
-          </div>
-          {/* Branch Selection */}
-          <div className="branch-container">
-            <label htmlFor="branchid" className="required">Branch</label>
-            <select
-                id="branchid"
-                name="branchid"
-                value={formData.branchid}
-                onChange={handleChange}
-                required
-                className="select-input"
-            >
-                <option value="">Select Branch</option>
-                {Object.entries(BRANCH_MAPPING).map(([id, name]) => (
-                  <option key={id} value={id}>
-                      {name}
-                  </option>
-                ))}
-            </select>
-          </div>
-        </div>
-        <div className="button-container">
-          <button type="submit">Open Account</button>
-        </div>
-      </form>
-
-      {message && (
-        <div className={`message ${message.includes('successfully') ? 'success' : 'error'}`}>
-          {message}
-        </div>
-      )}
-    </div>
+    <Body 
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        formData={formData}
+        errors={errors}
+        message={message}
+        BRANCH_MAPPING={BRANCH_MAPPING}
+    />
   );
 }
 
