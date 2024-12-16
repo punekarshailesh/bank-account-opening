@@ -128,12 +128,15 @@ The frontend is a React-based web application that provides the user interface. 
 - `/backend` - Contains the Flask backend application
 - `/frontend` - Contains the React frontend application
 
-## Screenshot of Banking Application
-
-![alt text](/images/Dashboard.jpeg)
+# Screenshot of Banking Application
 
 ## Screenshot of Login Page 
-![alt text](/images/Login.jpeg)
+![Dashboard](https://github.com/user-attachments/assets/c47d56e6-dc23-4cb9-9c38-b1fecdceae53)
 
 ## Screenshot of Sign Up Form Page 
-![alt text](/images/Signup.jpeg)
+![SignUpForm](https://github.com/user-attachments/assets/166cd1b4-7b96-4add-9257-3912891d0f38)
+
+## Screenshot of Records
+![View Records](https://github.com/user-attachments/assets/6c5c20d8-9321-4b56-b9f9-ef030daa1c7e)
+
+
