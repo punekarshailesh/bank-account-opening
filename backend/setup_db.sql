@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS account (
     openingdate DATETIME,
     balance DECIMAL(10,2),
     status VARCHAR(10),
-    FOREIGN KEY (customerid) REFERENCES customer(customerid)
+    FOREIGN KEY (customerid) REFERENCES customer(customerid),
+    FOREIGN KEY (branchid) REFERENCES branch(branchid)
 );
 
 CREATE TABLE IF NOT EXISTS branch (

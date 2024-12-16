@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 import mysql.connector
+import logging
 import os
 from flask_cors import CORS
 from datetime import datetime
 import random
 import re
 from validators import validate_email, validate_aadhar, validate_pan, validate_balance
-from queries import insert_customer, insert_account 
+from queries import insert_customer, insert_account, fetch_info 
 
 
 app = Flask(__name__)
@@ -30,9 +31,6 @@ def get_db_connection():
 # Route to open an account
 @app.route('/open_account', methods=['POST'])
 def open_account():
-    print(request.method)  # Debug info
-    print(request.form)  # Debug info
-    print(request.files)  # Debug info
 
     data = request.form
     pancard_file = request.files.get('pancard_doc')
@@ -140,6 +138,41 @@ def open_account():
             "accountnumber":accountnumber}), 201
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {err}"}), 500
+    
 
-if __name__ == '__main__':
+# Route to fetch account information based on customerid and accountnumber
+@app.route('/get_details', methods=['POST'])
+def get_account_info():
+    data = request.get_json()
+    customer_id = data.get('customerid')
+    account_number = data.get('accountnumber')
+
+    try:
+        # Establish a new connection
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(fetch_info, (customer_id, account_number))
+        result = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        if result:
+            customer_details = {
+                'customerName': result[0],
+                'accountType': result[1],
+                'balance': float(result[2]),
+                'status': result[3]
+            }
+            return jsonify(customer_details), 200
+        else:
+            return jsonify({'message': 'Customer not found'}), 404
+
+    except Exception as e:
+        logging.error(f"Error: {str(e)}")  # Log the error
+        return jsonify({'message': f'Error: {str(e)}'}), 500
+
+
+if __name__ == "__main__":
     app.run(debug=True)

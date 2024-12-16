@@ -12,3 +12,10 @@ insert_account = """
                 accountnumber, openingdate, balance, status)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
+
+fetch_info = """
+    SELECT c.firstname, a.accounttype, a.balance, a.status 
+    FROM customer c 
+    JOIN account a ON c.customerid = a.customerid 
+    WHERE c.customerid = %s AND a.accountnumber = %s
+"""
