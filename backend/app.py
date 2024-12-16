@@ -47,18 +47,31 @@ def open_account():
         current_date = datetime.now().strftime('%d%H%M%S')
         customerid = f"{current_date}"
 
-        pancard_filename = f"pan_{customerid}_{pancard_file.filename}"
-        aadhar_filename = f"aadhar_{customerid}_{aadhar_file.filename}"
 
-        pancard_path = os.path.join('uploads', pancard_filename)
-        aadhar_path = os.path.join('uploads', aadhar_filename)
+
+        # Create main uploads directory if it doesn't exist
+        base_upload_dir = 'uploads'
+        os.makedirs(base_upload_dir, exist_ok=True)
+
+        customer_dir = os.path.join(base_upload_dir, customerid)
+        os.makedirs(customer_dir, exist_ok=True)
+
+        pancard_filename = f"pan_{pancard_file.filename}"
+        aadhar_filename = f"aadhar_{aadhar_file.filename}"
+
+        pancard_path = os.path.join(customer_dir, pancard_filename)
+        aadhar_path = os.path.join(customer_dir, aadhar_filename)
 
         pancard_file.save(pancard_path)
         aadhar_file.save(aadhar_path)
         
+
+
         email = data['email']
         aadharcard = data['aadharcard']
         pancard = data['pancard']
+
+
 
         # Validate data
         if not validate_email(email):
@@ -71,6 +84,8 @@ def open_account():
             return jsonify({'error': 'Invalid PAN format'}), 400
         
         
+
+
         # for acount table
         account_type = request.form.get('accounttype')
         balance = float(request.form.get('balance', 0))
@@ -79,6 +94,8 @@ def open_account():
         is_valid_balance, balance_error = validate_balance(account_type, balance)
         if not is_valid_balance:
             return jsonify({"error": balance_error}), 400
+
+
 
         accountid = int(str(customerid)[::-1])
         branchid = data['branchid']
