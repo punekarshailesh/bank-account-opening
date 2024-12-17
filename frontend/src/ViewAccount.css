@@ -4,11 +4,10 @@
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background: radial-gradient(#4271e0 0%, #d0e6f7 50%, #eb50f0 100%);
+    background: radial-gradient(#4271e0 0%, #d0e6f7 50%, #c456f0 100%);
   }
   
   .view-account-container h2 {
-    
     text-align: center;
     color: #191818;
     margin-bottom: 2rem;
