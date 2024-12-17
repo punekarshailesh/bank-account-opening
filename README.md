@@ -20,29 +20,22 @@ This banking application provides a secure platform for users to manage their ac
 ## Features
 
 ### User Management
-- User registration and authentication
+- User registration
 - Secure login/logout functionality
 - Profile management
-- Password reset capabilities
 
 ### Account Operations
 - View account balances
-- Transaction history
-- Fund transfers between accounts
-- Bill payments
 - Account statements generation
 
 ### Security Features
 - Secure authentication
-- Data encryption
-- Session management
 - Input validation
-- Protection against common web vulnerabilities
-
+  
 ## Technology Stack
 
 ### Backend
-- Python 3.x
+- Python 3.9
 - Flask framework
 - run the file app.py
 
@@ -128,18 +121,15 @@ The frontend is a React-based web application that provides the user interface. 
 - `/backend` - Contains the Flask backend application
 - `/frontend` - Contains the React frontend application
 
-# Screenshot of Banking Application
-
-
-<p>
+# Screenshot of Banking Application Project
 
 ## Screenshot of Login Page 
-![Dashboard image](images/Dashboar.jpeg)
+![Dashboard](images/Dashboard.jpeg)
 
 ## Screenshot of Sign Up Form Page 
-![SignUpForm](https://github.com/user-attachments/assets/166cd1b4-7b96-4add-9257-3912891d0f38)
+![SignUpForm](images/SignUpForm.jpeg)
 
 ## Screenshot of Records
-![View Records](https://github.com/user-attachments/assets/6c5c20d8-9321-4b56-b9f9-ef030daa1c7e)
+![SignUpForm](images/SignUpForm.jpeg)
 
 
