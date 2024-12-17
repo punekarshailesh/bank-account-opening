@@ -130,7 +130,7 @@ function ViewAccount() {
             </div>
             <div className="detail-row">
               <span className="detail-label">Balance:</span>
-              <span className="detail-value">${customerDetails.balance}</span>
+              <span className="detail-value">Rs. {customerDetails.balance}</span>
             </div>
             <div className="detail-row">
               <span className="detail-label">Account Status:</span>
