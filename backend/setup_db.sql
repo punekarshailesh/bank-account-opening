@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS customer (
     pancard VARCHAR(10)
 );
 
-CREATE TABLE IF NOT EXISTS account (
+CREATE TABLE if not EXISTS account (
     accountid VARCHAR(20) PRIMARY KEY,
     customerid VARCHAR(20),
     branchid VARCHAR(5),

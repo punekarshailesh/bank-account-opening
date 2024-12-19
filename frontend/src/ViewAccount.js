@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import "./ViewAccount.css";
+import { useNavigate } from "react-router-dom";
+import CustomerDetailsPage from "./CustomerDetailsPage";
 
 function ViewAccount() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     customerid: "",
     accountnumber: ""  // Changed back to accountnumber
   });
   const [customerDetails, setCustomerDetails] = useState(null);
   const [errors, setErrors] = useState({});
+  const [showDetailsPage, setShowDetailsPage] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,22 +21,23 @@ function ViewAccount() {
       [name]: value
     });
     if (errors[name]) {
-      setErrors({
-        ...errors,
+      setErrors( preState => ({
+        ...preState,
         [name]: ""
-      });
+      }));
     }
   };
+
 
   const validateForm = () => {
     let tempErrors = {};
     if (!formData.customerid.trim()) {
       tempErrors.customerid = "Customer ID is required";
     }
-    if (!formData.accountnumber.trim()) {  // Changed to accountnumber
-      tempErrors.accountnumber = "Account Number is required";  // Changed to accountnumber
-    } else if (!/^\d+$/.test(formData.accountnumber)) {  // Changed to accountnumber
-      tempErrors.accountnumber = "Account Number must contain only numbers";  // Changed to accountnumber
+    if (!formData.accountnumber.trim()) {  
+      tempErrors.accountnumber = "Account Number is required"; 
+    } else if (!/^\d+$/.test(formData.accountnumber)) { 
+      tempErrors.accountnumber = "Account Number must contain only numbers"; 
     }
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -50,14 +56,15 @@ function ViewAccount() {
           body: JSON.stringify(formData),
         });
 
+        const data = await response.json();
+        console.log('Customer Details received:', data);
         if (response.ok) {
-          const data = await response.json();
           setCustomerDetails(data);
+          setShowDetailsPage(true);
           setErrors({});
         } else {
-          const errorData = await response.json();
           setErrors({
-            submit: errorData.message || "Invalid Customer ID or Account Number"
+            submit: data.message || "Invalid Customer ID or Account Number"
           });
           setCustomerDetails(null);
         }
@@ -69,6 +76,16 @@ function ViewAccount() {
         setCustomerDetails(null);
       }
     }
+  };
+
+  const handleClose = () => {
+    setShowDetailsPage(false);
+    setCustomerDetails(null);
+    // Reset form
+    setFormData({
+      customerid: '',
+      accountnumber: ''
+    });
   };
 
   return (
@@ -110,34 +127,21 @@ function ViewAccount() {
         )}
 
         <div className="button-group">
+          <button type="submit" onClick={() => navigate('/')} className="back-button">
+            Back
+          </button>
           <button type="submit" className="submit-button">
             View Account
           </button>
         </div>
       </form>
 
-      {customerDetails && (
-        <div className="customer-details">
-          <h3>Customer Details</h3>
-          <div className="details-container">
-            <div className="detail-row">
-              <span className="detail-label">Customer Name:</span>
-              <span className="detail-value">{customerDetails.customerName}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Account Type:</span>
-              <span className="detail-value">{customerDetails.accountType}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Balance:</span>
-              <span className="detail-value">र्{customerDetails.balance}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Account Status:</span>
-              <span className="detail-value">{customerDetails.status}</span>
-            </div>
-          </div>
-        </div>
+      {/* Render CustomerDetailsPage as an overlay when showDetailsPage is true */}
+      {showDetailsPage && customerDetails && (
+        <CustomerDetailsPage 
+          customerDetails={customerDetails}
+          onClose={handleClose}
+        />
       )}
     </div>
   );

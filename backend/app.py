@@ -16,11 +16,12 @@ CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from all origin
 
 # Configure MySQL database connection
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'mysqlboot',  # Replace with your MySQL password
-    'database': 'bank'  # Replace with your database name
+    'host': os.getenv('MYSQL_HOST', 'localhost'),
+    'user': os.getenv('MYSQL_USER', 'root'),
+    'password': os.getenv('MYSQL_PASSWORD', 'mysqlboot'),
+    'database': os.getenv('MYSQL_DATABASE', 'bank')
 }
+
 
 # Establish MySQL connection
 def get_db_connection():
@@ -143,11 +144,11 @@ def open_account():
 # Route to fetch account information based on customerid and accountnumber
 @app.route('/get_details', methods=['POST'])
 def get_account_info():
-    data = request.get_json()
-    customer_id = data.get('customerid')
-    account_number = data.get('accountnumber')
-
     try:
+        data = request.get_json()
+        customer_id = data.get('customerid')
+        account_number = data.get('accountnumber')
+
         # Establish a new connection
         connection = get_db_connection()
         cursor = connection.cursor()
@@ -160,10 +161,11 @@ def get_account_info():
 
         if result:
             customer_details = {
-                'customerName': result[0],
-                'accountType': result[1],
-                'balance': float(result[2]),
-                'status': result[3]
+                'firstname': result[0],
+                'lastname': result[1],
+                'accounttype': result[2],
+                'balance': float(result[3]),
+                'status': result[4]
             }
             return jsonify(customer_details), 200
         else:

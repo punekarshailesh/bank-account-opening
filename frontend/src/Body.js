@@ -6,9 +6,12 @@ const Body = ({
     formData, 
     errors, 
     message, 
-    BRANCH_MAPPING 
+    BRANCH_MAPPING,
+    navigate
 }) => {
     return (
+        
+        
         <div className='container'>
             <h1>Welcome to NASA Bank!</h1>
             <h2>Please proceed with your account opening process</h2>
@@ -210,6 +213,8 @@ const Body = ({
                     </div>
                 </div>
                 <div className="button-container">
+                    <button type="submit" onClick={() => navigate(-1)} className="back-button">Back</button>
+                    <button type="reset" className="reset-button">Reset</button>
                     <button type="submit">Open Account</button>
                 </div>
             </form>
