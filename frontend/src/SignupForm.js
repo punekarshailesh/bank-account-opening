@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
 import Body from './Body';
+import SuccessPage from './SuccessPage';
+import { useNavigate } from 'react-router-dom';
 
 const BRANCH_MAPPING = {
   '101': 'Downtown Branch',
@@ -17,6 +19,8 @@ const BRANCH_MAPPING = {
 
 
 function SignupForm() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -33,6 +37,9 @@ function SignupForm() {
     aadhar_doc: null
   });
   const [message, setMessage] = useState('');
+
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [accountDetails, setAccountDetails] = useState(null);
 
   // Validation functions
   const validateEmail = (email) => {
@@ -216,16 +223,19 @@ function SignupForm() {
       });
       const data = await response.json();
       if (response.ok) {
-          // Check if both message and customer_id exist
-          if (data.message && data.customer_id && data.accountnumber) {
-            setMessage(`${data.message} Your Customer ID is: ${data.customer_id} and your Account Number is: ${data.accountnumber}`);
-          } else {
-              setMessage(data.message || 'Account created successfully!');
-          }
           const accountTypeFormatted = formData.accounttype.charAt(0).toUpperCase() + formData.accounttype.slice(1);
           const branchName = BRANCH_MAPPING[formData.branchid];
-          setMessage(`Your ${accountTypeFormatted} Account has been created successfully! Your Customer ID is: ${data.customer_id}
-            your Account Number is: ${data.accountnumber}`);
+          
+          // Set account details for success page
+          setAccountDetails({
+            accountType: accountTypeFormatted,
+            customerId: data.customer_id,
+            accountId: data.accountnumber,
+            branchName: branchName,
+            balance: formData.balance
+          });
+          
+          setShowSuccess(true);
           // Clear form
           setFormData({
               firstname: '',
@@ -254,14 +264,24 @@ function SignupForm() {
 
 
   return (
-    <Body 
-        handleSubmit={handleSubmit}
-        handleChange={handleChange}
-        formData={formData}
-        errors={errors}
-        message={message}
-        BRANCH_MAPPING={BRANCH_MAPPING}
-    />
+    <>
+      {showSuccess ? (
+        <SuccessPage 
+          accountDetails={accountDetails}
+          onClose={() => setShowSuccess(false)}
+        />
+      ) : (
+        <Body 
+          handleSubmit={handleSubmit}
+          handleChange={handleChange}
+          formData={formData}
+          errors={errors}
+          message={message}
+          BRANCH_MAPPING={BRANCH_MAPPING}
+          navigate={navigate}
+        />
+      )}
+    </>
   );
 }
 

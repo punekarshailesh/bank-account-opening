@@ -5,6 +5,7 @@ import Home from "./Home";
 import SignupForm from "./SignupForm";
 import "./App.css";
 import ViewAccount from "./ViewAccount";
+import SuccessPage from "./SuccessPage";
 
 function App() {
   return (

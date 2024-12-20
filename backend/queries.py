@@ -14,8 +14,8 @@ insert_account = """
 """
 
 fetch_info = """
-    SELECT c.firstname, a.accounttype, a.balance, a.status 
-    FROM customer c 
-    JOIN account a ON c.customerid = a.customerid 
+    SELECT c.firstname, c.lastname, a.accounttype, a.balance, a.status
+    FROM customer c
+    JOIN account a ON c.customerid = a.customerid
     WHERE c.customerid = %s AND a.accountnumber = %s
 """

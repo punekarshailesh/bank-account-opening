@@ -89,7 +89,22 @@ input[type="file"] {
 }
 
 /* Submit button styling */
-button[type="submit"] {
+button[type="submit"]{
+  width: 50%;
+  padding: 14px;
+  background-color: #13b518;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  transition: all 0.5s ease;
+}
+
+button[type="reset"]{
   width: 50%;
   padding: 14px;
   background-color: #3498db;
@@ -101,16 +116,23 @@ button[type="submit"] {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 20px;
+  transition: all 0.5s ease;
 }
 
 .button-container {
-    display: grid;
+    display: flex;
     place-items: center;
     margin-top: 20px;
 }
 
 button[type="submit"]:hover {
-  background-color: #044e80;
+  background-color: #0f7b14;
+  transform: translateY(-4px);
+}
+
+button[type="reset"]:hover {
+  background-color: #074f7e;
+  transform: translateY(-4px);
 }
 
 button[type="submit"]:active {
